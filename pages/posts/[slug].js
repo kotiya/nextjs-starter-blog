@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import style from "react-syntax-highlighter/dist/cjs/styles/prism/dracula";
+import style from "react-syntax-highlighter/dist/esm/styles/prism/dracula";
 import Image from "next/image";
 
 import { Layout, SEO, Bio } from "@components/common";
@@ -36,17 +36,23 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
 
       <nav className="flex flex-wrap justify-between mb-10">
         {previousPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${previousPost.slug}`}>
-            <a className="text-lg font-bold">
-              ← {previousPost.frontmatter.title}
-            </a>
+          <Link
+            href={"/posts/[slug]"}
+            as={`/posts/${previousPost.slug}`}
+            className="text-lg font-bold"
+          >
+            ←{previousPost.frontmatter.title}
           </Link>
         ) : (
           <div />
         )}
         {nextPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${nextPost.slug}`}>
-            <a className="text-lg font-bold">{nextPost.frontmatter.title} →</a>
+          <Link
+            href={"/posts/[slug]"}
+            as={`/posts/${nextPost.slug}`}
+            className="text-lg font-bold"
+          >
+            {nextPost.frontmatter.title}→
           </Link>
         ) : (
           <div />
@@ -91,9 +97,13 @@ const MarkdownImage = ({ alt, src }) => {
   return (
     <Image
       alt={alt}
-      src={require(`../../content/assets/${src}`)}
+      src={require(`../../content/assets/${src}`).default}
       placeholder="blur"
       className="w-full"
+      style={{
+        maxWidth: "100%",
+        height: "auto"
+      }}
     />
   );
 };
