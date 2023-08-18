@@ -22,7 +22,7 @@ const defaultSerif = [
   "serif",
 ];
 
-module.exports = {
+export default {
   mode: "jit",
   purge: [
     "./components/**/*.{js,ts,jsx,tsx,css}",
@@ -114,11 +114,10 @@ module.exports = {
       body: ["Merriweather", ...defaultSerif],
     },
   },
-  variants: {},
-  plugins: [require("@tailwindcss/typography")],
   variants: {
     extend: {
       typography: ["dark"],
     },
   },
+  plugins: [require("@tailwindcss/typography").default],
 };
