@@ -54,10 +54,15 @@ const Header = () => {
       {mounted && (
         <div className="flex space-x-4">
           <DarkModeSwitch checked={isDarkMode} onChange={toggleDarkMode} />
-          <Link href="/rss.xml" passHref>
-            <a target="__blank" rel="noreferrer noopener">
-              <RSSIcon className={isDarkMode ? "text-white" : "text-black"} />
-            </a>
+          <Link
+            href="/rss.xml"
+            passHref
+            target="__blank"
+            rel="noreferrer noopener"
+            legacyBehavior>
+
+            <RSSIcon className={isDarkMode ? "text-white" : "text-black"} />
+
           </Link>
         </div>
       )}
@@ -67,31 +72,31 @@ const Header = () => {
 
 const LargeTitle = () => (
   <h1>
-    <Link href="/">
-      <a
-        className={clsx(
-          "text-3xl font-black leading-none text-black no-underline font-display",
-          "sm:text-5xl",
-          "dark:text-white"
-        )}
-      >
+    <Link
+      href="/"
+      className={clsx(
+        "text-3xl font-black leading-none text-black no-underline font-display",
+        "sm:text-5xl",
+        "dark:text-white"
+      )}>
+      
         Next.Js Starter Blog
-      </a>
+      
     </Link>
   </h1>
 );
 
 const SmallTitle = () => (
   <h1>
-    <Link href="/">
-      <a
-        className={clsx(
-          "text-2xl font-black text-black no-underline font-display",
-          "dark:text-white"
-        )}
-      >
+    <Link
+      href="/"
+      className={clsx(
+        "text-2xl font-black text-black no-underline font-display",
+        "dark:text-white"
+      )}>
+      
         Next.Js Starter Blog
-      </a>
+      
     </Link>
   </h1>
 );
