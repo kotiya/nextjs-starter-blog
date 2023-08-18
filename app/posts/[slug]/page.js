@@ -3,11 +3,14 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import style from "react-syntax-highlighter/dist/cjs/styles/prism/dracula";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 import { Layout, SEO, Bio } from "@components/common";
 import { getPostBySlug, getPostsSlugs } from "@utils/posts";
 
 export default function Post({ post, frontmatter, nextPost, previousPost }) {
+  const router = useRouter();
+
   return (
     <Layout>
       <SEO
@@ -36,7 +39,7 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
 
       <nav className="flex flex-wrap justify-between mb-10">
         {previousPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${previousPost.slug}`}>
+          <Link href={`/posts/[slug]`} as={`/posts/${previousPost.slug}`}>
             <a className="text-lg font-bold">
               ← {previousPost.frontmatter.title}
             </a>
@@ -45,7 +48,7 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
           <div />
         )}
         {nextPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${nextPost.slug}`}>
+          <Link href={`/posts/[slug]`} as={`/posts/${nextPost.slug}`}>
             <a className="text-lg font-bold">{nextPost.frontmatter.title} →</a>
           </Link>
         ) : (
