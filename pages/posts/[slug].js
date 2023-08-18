@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import style from "react-syntax-highlighter/dist/cjs/styles/prism/dracula";
+import style from "react-syntax-highlighter/dist/esm/styles/prism/dracula";
 import Image from "next/image";
 
 import { Layout, SEO, Bio } from "@components/common";
@@ -91,7 +91,7 @@ const MarkdownImage = ({ alt, src }) => {
   return (
     <Image
       alt={alt}
-      src={require(`../../content/assets/${src}`)}
+      src={require(`../../content/assets/${src}`).default}
       placeholder="blur"
       className="w-full"
     />
