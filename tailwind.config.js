@@ -22,7 +22,7 @@ const defaultSerif = [
   "serif",
 ];
 
-module.exports = {
+export default {
   mode: "jit",
   purge: [
     "./components/**/*.{js,ts,jsx,tsx,css}",

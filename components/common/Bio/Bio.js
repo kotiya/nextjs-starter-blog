@@ -17,7 +17,10 @@ export function Bio({ className }) {
           src={profilePicture}
           alt="Profile"
           placeholder="blur"
-        />
+          style={{
+            maxWidth: "100%",
+            height: "auto"
+          }} />
       </div>
 
       <p className="text-base leading-7">
