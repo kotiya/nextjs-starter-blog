@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { Layout, SEO, Bio } from "@components/common";
 import { getPostBySlug, getPostsSlugs } from "@utils/posts";
+import { fetchPostBySlug, fetchPostsSlugs } from "@utils/api";
 
 export default function Post({ post, frontmatter, nextPost, previousPost }) {
   return (
@@ -36,17 +37,23 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
 
       <nav className="flex flex-wrap justify-between mb-10">
         {previousPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${previousPost.slug}`}>
-            <a className="text-lg font-bold">
-              ← {previousPost.frontmatter.title}
-            </a>
+          <Link
+            href={`/posts/[slug]`}
+            as={`/posts/${previousPost.slug}`}
+            className="text-lg font-bold"
+          >
+            ←{previousPost.frontmatter.title}
           </Link>
         ) : (
           <div />
         )}
         {nextPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${nextPost.slug}`}>
-            <a className="text-lg font-bold">{nextPost.frontmatter.title} →</a>
+          <Link
+            href={`/posts/[slug]`}
+            as={`/posts/${nextPost.slug}`}
+            className="text-lg font-bold"
+          >
+            {nextPost.frontmatter.title}→
           </Link>
         ) : (
           <div />
@@ -56,17 +63,17 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
   );
 }
 
-export async function getStaticPaths() {
-  const paths = getPostsSlugs();
+export async function generateStaticParams() {
+  const paths = await fetchPostsSlugs();
 
   return {
+    dynamicParams: false,
     paths,
-    fallback: false,
   };
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const postData = getPostBySlug(slug);
+  const postData = await fetchPostBySlug(slug);
 
   if (!postData.previousPost) {
     postData.previousPost = null;
@@ -94,6 +101,10 @@ const MarkdownImage = ({ alt, src }) => {
       src={require(`../../content/assets/${src}`)}
       placeholder="blur"
       className="w-full"
+      style={{
+        maxWidth: "100%",
+        height: "auto"
+      }}
     />
   );
 };
