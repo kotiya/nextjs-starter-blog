@@ -1,9 +1,9 @@
 import Head from "next/head";
-
 import { getSiteMetaData } from "@utils/helpers";
+import { Metadata } from "next";
 
 export function SEO({ title, description = "" }) {
-  const siteMetadata = getSiteMetaData();
+  const siteMetadata: Metadata = getSiteMetaData();
 
   const metaDescription = description || siteMetadata.description;
 
