@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import { Layout, Bio, SEO } from "@components/common";
-import { getSortedPosts } from "@utils/posts";
 import { generateRssPostsFeed } from "@utils/rss";
 
 export default function Home({ posts }) {
@@ -9,11 +8,11 @@ export default function Home({ posts }) {
     <Layout>
       <SEO title="All posts" />
       <Bio className="my-14" />
-      {posts.map(({ frontmatter: { title, description, date }, slug }) => (
+      {posts.map(({ title, description, date, slug }) => (
         <article key={slug}>
           <header className="mb-2">
             <h3 className="mb-2">
-              <Link href={"/posts/[slug]"} as={`/posts/${slug}`}>
+              <Link href={`/posts/${slug}`}>
                 <a className="text-4xl font-bold text-yellow-600 font-display">
                   {title}
                 </a>
@@ -31,12 +30,14 @@ export default function Home({ posts }) {
 }
 
 export async function getStaticProps() {
-  generateRssPostsFeed();
-  const posts = getSortedPosts();
+  await generateRssPostsFeed();
+  const res = await fetch("https://api.example.com/posts", { cache: 'force-cache' });
+  const posts = await res.json();
 
   return {
     props: {
       posts,
     },
+    revalidate: 60, // revalidate every 60 seconds
   };
 }
