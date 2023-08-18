@@ -3,11 +3,18 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import style from "react-syntax-highlighter/dist/cjs/styles/prism/dracula";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 import { Layout, SEO, Bio } from "@components/common";
-import { getPostBySlug, getPostsSlugs } from "@utils/posts";
+import { fetchPostBySlug, fetchPostsSlugs } from "@utils/posts";
 
 export default function Post({ post, frontmatter, nextPost, previousPost }) {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <Layout>
       <SEO
@@ -36,17 +43,23 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
 
       <nav className="flex flex-wrap justify-between mb-10">
         {previousPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${previousPost.slug}`}>
-            <a className="text-lg font-bold">
-              ← {previousPost.frontmatter.title}
-            </a>
+          <Link
+            href={`/posts/[slug]`}
+            as={`/posts/${previousPost.slug}`}
+            className="text-lg font-bold"
+          >
+            ←{previousPost.frontmatter.title}
           </Link>
         ) : (
           <div />
         )}
         {nextPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${nextPost.slug}`}>
-            <a className="text-lg font-bold">{nextPost.frontmatter.title} →</a>
+          <Link
+            href={`/posts/[slug]`}
+            as={`/posts/${nextPost.slug}`}
+            className="text-lg font-bold"
+          >
+            {nextPost.frontmatter.title}→
           </Link>
         ) : (
           <div />
@@ -56,27 +69,42 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
   );
 }
 
-export async function getStaticPaths() {
-  const paths = getPostsSlugs();
-
-  return {
-    paths,
-    fallback: false,
-  };
+export async function fetchPostBySlug(slug) {
+  const res = await fetch(`/api/posts/${slug}`);
+  const postData = await res.json();
+  return postData;
 }
 
-export async function getStaticProps({ params: { slug } }) {
-  const postData = getPostBySlug(slug);
+export async function fetchPostsSlugs() {
+  const res = await fetch(`/api/posts`);
+  const slugs = await res.json();
+  return slugs;
+}
 
-  if (!postData.previousPost) {
-    postData.previousPost = null;
-  }
+export async function fetchPreviousPost(slug) {
+  const res = await fetch(`/api/posts/${slug}/previous`);
+  const previousPost = await res.json();
+  return previousPost;
+}
 
-  if (!postData.nextPost) {
-    postData.nextPost = null;
-  }
+export async function fetchNextPost(slug) {
+  const res = await fetch(`/api/posts/${slug}/next`);
+  const nextPost = await res.json();
+  return nextPost;
+}
 
-  return { props: postData };
+export async function fetchPostData(slug) {
+  const post = await fetchPostBySlug(slug);
+  const frontmatter = post.frontmatter;
+  const previousPost = await fetchPreviousPost(slug);
+  const nextPost = await fetchNextPost(slug);
+
+  return {
+    post,
+    frontmatter,
+    previousPost,
+    nextPost,
+  };
 }
 
 const CodeBlock = ({ language, value }) => {
@@ -94,6 +122,10 @@ const MarkdownImage = ({ alt, src }) => {
       src={require(`../../content/assets/${src}`)}
       placeholder="blur"
       className="w-full"
+      style={{
+        maxWidth: "100%",
+        height: "auto"
+      }}
     />
   );
 };
