@@ -1,15 +1,30 @@
 import Link from "next/link";
-
+import { useState, useEffect } from "react";
 import { Layout, Bio, SEO } from "@components/common";
-import { getSortedPosts } from "@utils/posts";
 import { generateRssPostsFeed } from "@utils/rss";
 
-export default function Home({ posts }) {
+export default function Home() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("/api/posts");
+        const data = await response.json();
+        setPosts(data.posts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
     <Layout>
       <SEO title="All posts" />
       <Bio className="my-14" />
-      {posts.map(({ frontmatter: { title, description, date }, slug }) => (
+      {posts.map(({ title, description, date, slug }) => (
         <article key={slug}>
           <header className="mb-2">
             <h3 className="mb-2">
@@ -32,11 +47,8 @@ export default function Home({ posts }) {
 
 export async function getStaticProps() {
   generateRssPostsFeed();
-  const posts = getSortedPosts();
 
   return {
-    props: {
-      posts,
-    },
+    props: {},
   };
 }
