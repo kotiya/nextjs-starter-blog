@@ -1,7 +1,5 @@
 import Link from "next/link";
-
 import { Layout, Bio, SEO } from "@components/common";
-import { getSortedPosts } from "@utils/posts";
 import { generateRssPostsFeed } from "@utils/rss";
 
 export default function Home({ posts }) {
@@ -31,8 +29,12 @@ export default function Home({ posts }) {
 }
 
 export async function getStaticProps() {
+  const staticData = await fetch(`URL`, { cache: 'force-cache' });
+  const dynamicData = await fetch(`URL`, { cache: 'no-store' });
+  const revalidatedData = await fetch(`URL`, { next: { revalidate: 10 } });
+
   generateRssPostsFeed();
-  const posts = getSortedPosts();
+  const posts = await staticData.json();
 
   return {
     props: {
