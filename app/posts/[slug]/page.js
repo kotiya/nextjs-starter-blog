@@ -91,9 +91,41 @@ const MarkdownImage = ({ alt, src }) => {
   return (
     <Image
       alt={alt}
-      src={require(`../../content/assets/${src}`)}
+      src={import(`../../content/assets/${src}`)}
       placeholder="blur"
       className="w-full"
     />
   );
 };
+
+export async function fetchStaticData() {
+  const res = await fetch("https://api.example.com/static-data", {
+    cache: "force-cache",
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function fetchDynamicData() {
+  const res = await fetch("https://api.example.com/dynamic-data", {
+    cache: "no-store",
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function fetchCachedData() {
+  const res = await fetch("https://api.example.com/cached-data", {
+    cache: "default",
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function fetchRevalidatedData() {
+  const res = await fetch("https://api.example.com/revalidated-data", {
+    cache: "no-store",
+  });
+  const data = await res.json();
+  return data;
+}
