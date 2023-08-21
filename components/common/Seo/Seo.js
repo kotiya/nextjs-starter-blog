@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { Metadata } from "next";
 
 import { getSiteMetaData } from "@utils/helpers";
 
@@ -29,3 +30,11 @@ export function SEO({ title, description = "" }) {
     </Head>
   );
 }
+
+export const metadata: Metadata = {
+  title: {
+    template: "...",
+    default: "...",
+    absolute: "...",
+  },
+};
