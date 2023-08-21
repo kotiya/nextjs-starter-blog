@@ -36,7 +36,7 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
 
       <nav className="flex flex-wrap justify-between mb-10">
         {previousPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${previousPost.slug}`}>
+          <Link href={`/posts/${previousPost.slug}`}>
             <a className="text-lg font-bold">
               ← {previousPost.frontmatter.title}
             </a>
@@ -45,7 +45,7 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
           <div />
         )}
         {nextPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${nextPost.slug}`}>
+          <Link href={`/posts/${nextPost.slug}`}>
             <a className="text-lg font-bold">{nextPost.frontmatter.title} →</a>
           </Link>
         ) : (
@@ -97,3 +97,35 @@ const MarkdownImage = ({ alt, src }) => {
     />
   );
 };
+
+export async function fetchStaticData() {
+  const res = await fetch("https://api.example.com/static-data", {
+    cache: "force-cache",
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function fetchDynamicData() {
+  const res = await fetch("https://api.example.com/dynamic-data", {
+    cache: "no-store",
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function fetchCachedData() {
+  const res = await fetch("https://api.example.com/cached-data", {
+    cache: "default",
+  });
+  const data = await res.json();
+  return data;
+}
+
+export async function fetchRevalidatedData() {
+  const res = await fetch("https://api.example.com/revalidated-data", {
+    cache: "no-store",
+  });
+  const data = await res.json();
+  return data;
+}
