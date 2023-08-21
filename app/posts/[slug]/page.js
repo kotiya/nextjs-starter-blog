@@ -1,11 +1,11 @@
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import style from "react-syntax-highlighter/dist/cjs/styles/prism/dracula";
+import style from "react-syntax-highlighter/dist/esm/styles/prism/dracula";
 import Image from "next/image";
 
 import { Layout, SEO, Bio } from "@components/common";
-import { getPostBySlug, getPostsSlugs } from "@utils/posts";
+import { getPostsSlugs } from "@utils/posts";
 
 export default function Post({ post, frontmatter, nextPost, previousPost }) {
   return (
@@ -57,7 +57,7 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
 }
 
 export async function getStaticPaths() {
-  const paths = getPostsSlugs();
+  const paths = await getPostsSlugs();
 
   return {
     paths,
@@ -66,7 +66,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const postData = getPostBySlug(slug);
+  const postData = await fetch(`/api/posts/${slug}`, { cache: 'force-cache' }).then(res => res.json());
 
   if (!postData.previousPost) {
     postData.previousPost = null;
@@ -91,7 +91,7 @@ const MarkdownImage = ({ alt, src }) => {
   return (
     <Image
       alt={alt}
-      src={require(`../../content/assets/${src}`)}
+      src={require(`../../content/assets/${src}`).default}
       placeholder="blur"
       className="w-full"
     />
