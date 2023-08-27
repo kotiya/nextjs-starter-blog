@@ -1,7 +1,7 @@
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import style from "react-syntax-highlighter/dist/cjs/styles/prism/dracula";
+import style from "react-syntax-highlighter/dist/esm/styles/prism/dracula";
 import Image from "next/image";
 
 import { Layout, SEO, Bio } from "@components/common";
@@ -36,17 +36,21 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
 
       <nav className="flex flex-wrap justify-between mb-10">
         {previousPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${previousPost.slug}`}>
-            <a className="text-lg font-bold">
-              ← {previousPost.frontmatter.title}
-            </a>
+          <Link
+            href={`/posts/${previousPost.slug}`}
+            className="text-lg font-bold"
+          >
+            ←{previousPost.frontmatter.title}
           </Link>
         ) : (
           <div />
         )}
         {nextPost ? (
-          <Link href={"/posts/[slug]"} as={`/posts/${nextPost.slug}`}>
-            <a className="text-lg font-bold">{nextPost.frontmatter.title} →</a>
+          <Link
+            href={`/posts/${nextPost.slug}`}
+            className="text-lg font-bold"
+          >
+            {nextPost.frontmatter.title}→
           </Link>
         ) : (
           <div />
@@ -56,12 +60,13 @@ export default function Post({ post, frontmatter, nextPost, previousPost }) {
   );
 }
 
-export async function getStaticPaths() {
+export async function generateStaticParams() {
   const paths = getPostsSlugs();
+  const dynamicParams = false;
 
   return {
     paths,
-    fallback: false,
+    dynamicParams,
   };
 }
 
@@ -94,6 +99,38 @@ const MarkdownImage = ({ alt, src }) => {
       src={require(`../../content/assets/${src}`)}
       placeholder="blur"
       className="w-full"
+      style={{
+        maxWidth: "100%",
+        height: "auto"
+      }}
     />
   );
 };
+
+export async function getServerData() {
+  const res = await fetch('https://api.example.com/data', { cache: 'no-store' });
+  const data = await res.json();
+
+  return {
+    data
+  };
+}
+
+export async function getStaticData() {
+  const res = await fetch('https://api.example.com/static-data', { cache: 'force-cache' });
+  const data = await res.json();
+
+  return {
+    data
+  };
+}
+
+export async function getRevalidatedData() {
+  const res = await fetch('https://api.example.com/revalidated-data', { cache: 'no-store' });
+  const data = await res.json();
+
+  return {
+    data,
+    revalidate: 10
+  };
+}
